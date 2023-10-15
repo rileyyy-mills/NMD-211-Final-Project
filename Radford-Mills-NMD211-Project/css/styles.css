@@ -1,56 +1,122 @@
 /******************/
 /* CSS tag rules*/
-
 body {
-	background-color:#37180F;
+	background-color: #37180F;
+	color: #F5CC8E;
 }
 
 header {
-	text-align:center;
-	letter-spacing:5px;
-	height:10%;
-	color:#F5CC8E;
+	text-align: center;
+	letter-spacing: 5px;
+	height: 10%;
+}
+
+article {
+	border: 3px solid black;
+	padding: 10px;
+	text-align: center;
+}
+
+article h2 {
+	width: 100%;
+}
+
+aside {
+	box-sizing: border-box;
+	float: left;
+	width: 30%;
+	min-width: 200px;
+	padding: 20px;
+}
+
+a:link {
+	color: lightblue;
+}
+
+canvas {
+	border: 10px double black;
+	width: 700px;
+	background-color: white;
+}
+
+img {
+	min-width: 100px;
+	background-color: gray;
+}
+
+main {
+	padding: 20px;
 }
 
 nav {
-	font-size:36px;
-	background-color:#927F75;
-	text-align:center;
-	letter-spacing:3px;
-	padding-top:5px;
-	padding-bottom:5px;
-	width:100%;
+	font-size: 36px;
+	background-color: #927F75;
+	border-radius: 30px 5px 30px 5px;
+	/*Used W3 schools figure out the right border stuff: https://www.w3schools.com/css/css3_borders.asp */
+	text-align: center;
+	letter-spacing: 3px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 100%;
+	height: fit-content;
 }
+
+nav a {
+	margin-inline: 5px;
+}
+
+nav a:any-link {
+	color: #F5CC8E;
+}
+
+footer {
+	padding: 20px;
+	text-align: center;
+}
+
 
 /*******************/
 /* CSS id rules */
 
 #title {
-	text-align:left;
-	float:left;
-	padding-left:5%;
-	width:30%;
-	border-right:7px solid #F5CC8E;
-	font-weight:bold;
-	color:#F5CC8E;
+	text-align: left;
+	float: left;
+	padding-inline: 5%;
+	width: fit-content;
+	border-right: 7px solid #F5CC8E;
+	font-weight: bold;
+	color: #F5CC8E;
 }
 
-#mainBody{
-	background-color:AntiqueWhite;
-	min-height:1255px; /*Found on W3 schools when google searching an easy way to make the height element conditional*/
+#mainBody {
+	min-width: 400px;
 }
 
 #container {
-	width:100%;
-	margin:3px auto;
+	width: 100%;
+	margin: 5px auto;
 }
 
 /*******************/
 /* CSS class rules */
+.colContainer {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
 
+.ad {
+	text-align: center;
+	border: 3px solid black;
+	margin-top: 5px;
+	background-color: gray;
+	width: auto;
+}
 
+.rows {
+	flex-direction: column;
+}
 
-
-
-
-
+.rows article {
+	border-color: transparent;
+}

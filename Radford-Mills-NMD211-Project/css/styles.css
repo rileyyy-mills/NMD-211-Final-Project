@@ -63,6 +63,7 @@ nav {
 
 nav a {
 	margin-inline: 5px;
+	text-wrap: nowrap;
 }
 
 nav a:any-link {
@@ -95,6 +96,10 @@ footer {
 #container {
 	width: 100%;
 	margin: 5px auto;
+}
+
+#controls li{
+	text-align: left;
 }
 
 /*******************/

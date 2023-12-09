@@ -1,54 +1,53 @@
 // Got from ChatGPT to speed up development
 class Slider {
     constructor(x, y, length, thickness) {
-      this.x = x;
-      this.y = y;
-      this.length = length;
-      this.thickness = thickness;
-      this.handleSize = 20; // Size of the draggable handle
-      this.value = 0.5; // Initial value between 0 and 1
-      this.isDragging = false;
+        this.x = x;
+        this.y = y;
+        this.length = length;
+        this.thickness = thickness;
+        this.handleSize = 20; 
+        this.value = 0.5; // value between 0 and 1
+        this.isDragging = false;
     }
-  
+
     display() {
-      // Draw the track
-      fill(150);
-      rect(this.x, this.y - this.thickness / 2, this.length, this.thickness);
-  
-      // Calculate the handle position based on the current value
-      let handleX = this.x + this.value * this.length - this.handleSize / 2;
-  
-      // Draw the handle
-      fill(this.isDragging ? color(221, 90, 54) : color(139, 0, 0));
-      ellipse(handleX + this.handleSize / 2, this.y, this.handleSize, this.handleSize);
+        // Draw the track
+        fill(150);
+        rect(this.x, this.y - this.thickness / 2, this.length, this.thickness);
+
+        // Calculate the handle position based on the current value
+        let handleX = this.x + this.value * this.length - this.handleSize / 2;
+
+        // Draw the handle
+        fill(this.isDragging ? color(221, 90, 54) : color(139, 0, 0));
+        ellipse(handleX + this.handleSize / 2, this.y, this.handleSize, this.handleSize);
     }
-  
+
     mousePressed() {
-      // Check if the mouse is over the handle
-      let handleX = this.x + this.value * this.length - this.handleSize / 2;
-      let handleY = this.y;
-      let d = dist(mouseX, mouseY, handleX + this.handleSize / 2, handleY);
-      if (d < this.handleSize / 2) {
-        console.log("SLIDER IS PRESSED");
-        this.isDragging = true;
-      }
-      
+        // Check if the mouse is over the handle
+        let handleX = this.x + this.value * this.length - this.handleSize / 2;
+        let handleY = this.y;
+        let d = dist(mouseX, mouseY, handleX + this.handleSize / 2, handleY);
+        if (d < this.handleSize / 2) {
+            console.log("SLIDER IS PRESSED");
+            this.isDragging = true;
+        }
+
     }
-  
+
     mouseDragged() {
-      // If the mouse is dragging, update the slider value
-      if (this.isDragging) {
-        console.log("SLIDER IS DRAGGING");
-        let normalizedValue = constrain((mouseX - this.x) / this.length, 0, 1);
-        this.value = normalizedValue;
-        // Use this.value to set the actual volume or any other parameter
-      }
+        // If the mouse is dragging, update the slider value
+        if (this.isDragging) {
+            console.log("SLIDER IS DRAGGING");
+            let normalizedValue = constrain((mouseX - this.x) / this.length, 0, 1);
+            this.value = normalizedValue;
+        }
     }
-  
+
     mouseReleased() {
-      // Stop dragging when the mouse is released
-      console.log("SLIDER IS RELEASED");
-      this.isDragging = false;
+        // Stop dragging when the mouse is released
+        console.log("SLIDER IS RELEASED");
+        this.isDragging = false;
     }
 }
 
@@ -66,7 +65,6 @@ class Button {
 
     display() {
         // Check if the mouse is over the button
-
         this.isMouseOver = this.isMouseInside();
 
         if (this.isMouseOver) {
@@ -88,8 +86,6 @@ class Button {
     }
 
     isMouseInside() {
-
-
         return mouseX > this.x && mouseX < this.x + this.width &&
             mouseY > this.y && mouseY < this.y + this.height;
     }
@@ -98,7 +94,7 @@ class Button {
         if (this.isMouseOver) {
             lastMenuState = currentMenuState;
             currentMenuState = this.newState;
-            console.log(this.label,"BUTTON MOUSE PRESSED & SET STATE TO",this.newState);
+            console.log(this.label, "BUTTON MOUSE PRESSED & SET STATE TO", this.newState);
         }
     }
 }
@@ -113,6 +109,7 @@ let scoreBoardButton;
 let settingsButton;
 let creditsButton;
 let quitButton;
+let backButton;
 let volumeSlider;
 
 let lastMenuState
@@ -136,13 +133,13 @@ function uhOh() {
     stroke(255);
     strokeWeight(4);
     fill(221, 90, 54);
-    textAlign(CENTER,CENTER);
-    text("Uh-oh spaghettios! \nIt appears this section is not yet complete...",(width * 0.5), (height * 0.45));
+    textAlign(CENTER, CENTER);
+    text("Uh-oh spaghettios! \nIt appears this section is not yet complete...", (width * 0.5), (height * 0.45));
 }
 
 function runUI() {
 
-    // Move to setup at end of development so it only runs once
+    // Move to game.js setup at end of development so everything is in one place and is in setup
     playButton = new Button((width * 0.5) - 60, height * 0.45, 120, 35, "PLAY", menuHIDE);
     settingsButton = new Button((width * 0.5) - 60, height * 0.55, 120, 35, "SETTINGS", menuSETTINGS);
     scoreBoardButton = new Button((width * 0.5) - 60, height * 0.65, 120, 35, "SCORE BOARD", menuSCOREBOARD);
@@ -155,8 +152,8 @@ function runUI() {
 
     textFont(tropicalFont);
     background(mainMenuImg);
-  
-    
+
+
     if (currentMenuState == menuMAIN) {
 
         textSize(70);
@@ -172,45 +169,46 @@ function runUI() {
         scoreBoardButton.display();
         creditsButton.display();
     }
-    else if (currentMenuState == menuSETTINGS){
+    else if (currentMenuState == menuSETTINGS) {
         uhOh();
         backButton.display();
         //volumeSlider.display();
     }
-    else if (currentMenuState == menuSCOREBOARD){
+    else if (currentMenuState == menuSCOREBOARD) {
         uhOh();
         backButton.display();
     }
-    else if (currentMenuState == menuCREDITS){
+    else if (currentMenuState == menuCREDITS) {
         uhOh();
         backButton.display();
     }
     else if (currentMenuState == menuPAUSE) {
         continueButton.display();
+        quitButton.display();
     }
 }
 
 function mousePressed() {
 
-    if(backButton.isMouseOver){
+    if (backButton.isMouseOver) {
         backButton.mousePressed();
     }
 
     //if (currentMenuState == menuMAIN) {
-      if (playButton.isMouseOver) {
+    if (playButton.isMouseOver) {
         playButton.mousePressed();
-      } else if (settingsButton.isMouseOver) {
+    } else if (settingsButton.isMouseOver) {
         settingsButton.mousePressed();
-      } else if (scoreBoardButton.isMouseOver) {
+    } else if (scoreBoardButton.isMouseOver) {
         scoreBoardButton.mousePressed();
-      } else if (creditsButton.isMouseOver) {
+    } else if (creditsButton.isMouseOver) {
         creditsButton.mousePressed();
-      }
-   // } 
+    }
+    // } 
     //else if (currentMenuState == menuSETTINGS){
-        if (volumeSlider.isMouseOver) {
-            volumeSlider.mousePressed();
-        }
+    if (volumeSlider.isMouseOver) {
+        volumeSlider.mousePressed();
+    }
     //} 
     /*else if (currentMenuState == menuSCOREBOARD){
 
@@ -219,11 +217,14 @@ function mousePressed() {
 
     }
     else if (currentMenuState == menuPAUSE) {*/
-        // Handle mousePressed for buttons in pauseMenu
-        if (continueButton.isMouseOver) {
-          continueButton.mousePressed();
-        }
-   //}
+    // Handle mousePressed for buttons in pauseMenu
+    if (continueButton.isMouseOver) {
+        continueButton.mousePressed();
+    }
+    if (quitButton.isMouseOver) {
+        quitButton.mousePressed();
+    }
+    //}
 }
 
 function mouseDragged() {

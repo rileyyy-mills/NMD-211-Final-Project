@@ -1,5 +1,12 @@
 /******************/
 /* CSS tag rules*/
+@font-face {
+	font-family:"Aiyari Tropika";
+	src:url("Aiyari - Tropika Island Int.otf");
+	font-weight: normal;
+	font-style: normal;
+}
+
 body {
 	background-color: #37180F;
 	color: #F5CC8E;
@@ -12,9 +19,7 @@ header {
 }
 
 article {
-	border: 3px solid black;
-	padding: 10px;
-	text-align: center;
+	border: 3px solid white;
 }
 
 article h2 {
@@ -23,7 +28,6 @@ article h2 {
 
 aside {
 	box-sizing: border-box;
-	float: left;
 	width: 30%;
 	min-width: 200px;
 	padding: 20px;
@@ -102,6 +106,22 @@ footer {
 	text-align: left;
 }
 
+#indexAside {            /*this is a placeholder for an image, to be inserted later*/
+	width:25%;
+	height:80%;
+	padding:2%;
+	background-color:white;
+	float:right;
+	border-left:5px solid #F5CC8E;
+}
+
+#instructionsPage {
+	border:4px solid #F5CC8E;
+	background-color:#93653F;
+	padding-left:6px;
+	padding-right:6px;
+}
+
 /*******************/
 /* CSS class rules */
 .colContainer {
@@ -119,7 +139,19 @@ footer {
 }
 
 .rows {
-	flex-direction: column;
+	width:70%;
+	float:left;
+}
+
+.rows h2 {
+	font-size:30px;
+	font-family:"Aiyari - Tropika"; /*this isn't working yet don't worrrrry about it*/
+	text-decoration:underline;
+	text-align:center;
+}
+
+.rows p {
+	font-size:24px;
 }
 
 .rows article {

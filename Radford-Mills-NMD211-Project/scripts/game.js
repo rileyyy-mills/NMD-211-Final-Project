@@ -7,7 +7,9 @@ let cup;
 let score;
 let orderNumber;
 let icon;
-let icons;
+let icons = [];
+let infoIcon;
+let infoIcons = [];
 let orders = [];
 let itemList = ["Swedish Vodka", "Gin", "Whiskey", "Burboun", "Milk", "Tequila"];
 let ingredientList = [];
@@ -33,13 +35,10 @@ class Bar {
       fill(this.color1);
       ellipse(this.x + (i * (5 + this.slotWidth)), height - 3, this.slotWidth, this.slotHeight);
 
-      icon = new Icon(this.x + (i * (5 + this.slotWidth)), height - 20, 30, 30, "teal", this.ingredients[i]);
+      icon = new Icon(this.x + (i * (5 + this.slotWidth)), height - 15, 20, 30, "gray", this.ingredients[i]);
       icon.display();
+      infoIcons[i].display();
       icons.push(icon);
-
-      stroke(1);
-      fill("olive");
-      ellipse(150 + (i * (5 + this.slotWidth)), height - 20, 30, 30);
     };
   }
 
@@ -66,7 +65,6 @@ class Order {
     // Check if the ticket is hovered
     if (this.isHovered()) {
       // Draw a blurry circle behind the ticket when hovered
-      noStroke();
       fill(240, 230, 215, 100);
       ellipse(this.x_location + 18, 80, 50, 50);
 
@@ -96,18 +94,20 @@ class Order {
   previewTicket() {
     let current_y = (height * 0.25);
     stroke(0);
-    strokeWeight(0.2);
+    strokeWeight(2.5);
     fill(240, 230, 215)
     rect(width / 2 - 90, height * 0.2, 180, 250);
 
     // Display drink information on the enlarged ticket
-    fill(0);
-    textSize(12);
+    fill(255);
+    textSize(14);
     textAlign(LEFT);
     textWrap(WORD);
-    text("Drink: " + this.name, (width / 2 - 84), current_y);
-    text("History: " + this.history, (width / 2 - 84), current_y + 20, width / 2 - 152, height * 0.2, 180);
-    text("Ingredients: " + itemList.join(", "), (width / 2 - 84), current_y + 90, width / 2 - 152, height * 0.2, 180);
+    text("Drink:   " + this.name, (width / 2 - 84), current_y);
+    text("History:   " + this.history, (width / 2 - 84), current_y + 20, width / 2 - 152, height * 0.2, 180);
+    text("Ingredients:   " + itemList.join(", "), (width / 2 - 84), current_y + 90, width / 2 - 152, height * 0.2, 180);
+    strokeWeight(2);
+
   }
 
   //Displays ticket on side of screen
@@ -143,7 +143,6 @@ class Cup {
 
   addIngredient(newIngredient) {
     this.ingredientsAdded.push(newIngredient);
-    console.log("ADDED TO CUP:",newIngredient.name);
   }
 
   display() {
@@ -152,24 +151,25 @@ class Cup {
   }
 
   update() {
+    let layerH = -13.5;
+    let startY = (this.y+this.h-10);
+
     fill("gray");
     rect(this.x - (this.w-20)/2, this.y, this.w-20, this.h-10, 10, 10);
 
     let i;
-    // For loop that adds ingredients color
-    for(i = 0; i < this.ingredientsAdded.length; i++){
-      console.log("i IS:", i)
+    // For loop that adds ingredients color to cup
+    for(i = 0; (i < this.ingredientsAdded.length && i < 6); i++){
       let current = this.ingredientsAdded[i];
 
       if(i == 0) {
         fill(current.color);
-        rect(this.x - (this.w-20)/2, this.y+20, this.w-20, this.h-20, 0, 0, 10, 10);
+        rect(this.x - (this.w-20)/2, startY, this.w-20, layerH, 10, 10, 0, 0);
       }
       else {
         fill(current.color);
-        rect(this.x - (this.w-20)/2, this.y+(i+1)*20, this.w-20, this.h-(i+1)*20, 0, 0, 10, 10);
+        rect(this.x - (this.w-20)/2, startY + (i * layerH), this.w-20, layerH);
       }
-
     }
 
   }
@@ -247,25 +247,26 @@ class CocktailGlass extends Cup{
 }
 
 class Ingredient {
-  constructor(name, description, history, image, color) {
+  constructor(name,history, color) {
     this.name = name;
-    this.description = description;
     this.history = history;
-    this.image = image;
     this.color = color;
   }
 }
 
 class Icon {
-  constructor(x, y, w, h, primaryColor, ingredient) {
+  constructor(x, y, w, h, secondaryColor, ingredient) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
 
-    this.primaryColor = primaryColor;
+    this.primaryColor = ingredient.color;
+    this.secondaryColor = secondaryColor;
+    this.isDisplayed = false;
     this.hoverColor = "gold";
     this.ingredient = ingredient;
+    this.curvature = 5;
   }
 
   display() {
@@ -274,8 +275,20 @@ class Icon {
       ellipse(this.x, this.y - 2, this.w + this.w);
     }
 
-    fill(this.primaryColor);
-    rect(this.x - this.w/2, this.y, this.w, this.h);
+    // Draw vodka bottle
+    fill(this.primaryColor); 
+    stroke(0); 
+    strokeWeight(1.5); 
+
+    // Bottle body
+    rect(this.x - this.w/2, this.y - (this.h /2), this.w, this.h, this.curvature);
+
+    // Bottle neck
+    fill(this.secondaryColor);
+    rect(this.x - this.w/6, this.y - (this.h /1.25), (this.w*0.33), this.h*(0.32), this.curvature*0.6);
+    
+    // Bottle label
+    rect(this.x - this.w/2, this.y - (this.h /4), this.w, this.h/4);
 
     fill(255);
     textSize(12);
@@ -296,27 +309,71 @@ class Icon {
   }
 }
 
+class InfoIcon extends Icon {
+  display() {
+    stroke("blue");
+    strokeWeight(3);
+    fill(" ");
+    if(this.isHovered()){
+      fill("gold");
+    }
+
+    ellipse(this.x,this.y,this.w, this.h);
+
+    fill(255);
+    textSize(12);
+    textAlign(CENTER);
+    textWrap(WORD);
+    text("i", this.x, this.y-this.h/3);
+    
+    stroke(0);
+    strokeWeight(2);
+
+    if (this.isDisplayed) {
+      fill(240, 230, 215);
+      rect(width/2-75,75,150,100);
+
+      fill(255);
+      textSize(14);
+      text("History of "+ this.ingredient.name +": \n" +this.ingredient.history, width/2-70, 100, 140);
+
+    }
+  }
+
+  onClick() {
+    if(this.isHovered()) {
+      console.log("IS BEING DISPLAYED ONCLICK")
+      this.isDisplayed = true;
+    }
+  }
+}
 
 function setup() {
   createCanvas(mainMenuImg.width, mainMenuImg.height);
   bar = new Bar(6);
   cup = new Cup();
   score = new Score();
-
   orderNumber = 0;
 
-  // Creates list of possible ingredients
-  for (item of itemList) {
-    ingredientList.push(new Ingredient(item, "this is edible!", "its from somewhere!", " ", "green"));
+  ingredientList.push(new Ingredient("Light Rum", "its from somewhere!", "white"));
+  ingredientList.push(new Ingredient("Dark Rum", "its from somewhere!", "darkgoldenrod"));
+  ingredientList.push(new Ingredient("Coconut Rum", "its from somewhere!", "white"));
+  ingredientList.push(new Ingredient("Lime Juice", "its from somewhere!", "limeGreen"));
+  ingredientList.push(new Ingredient("Orange Juice", "its from somewhere!", "orange"));
+  ingredientList.push(new Ingredient("Pineapple", "its from somewhere!", "yellow"));
+
+  orderTypes.push(new Order("White Russian", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
+
+  let i;
+  for(i = 0; i < 6; i++){
+    infoIcon = new InfoIcon(172 + (i * (65)), height - 30, 13, 13, "gray", ingredientList[i]);
+    infoIcons.push(infoIcon);
   }
 
   // Adds ingredients to bar setup
   for (ingred of ingredientList) {
     bar.addIngredient(ingred);
   }
-
-  // Creates list of possible orders
-  orderTypes.push(new Order("White Russian", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
 
   // Adds list of possible orders to players current list of ACTIVE orders
   orders.push(orderTypes[0]);
@@ -390,6 +447,17 @@ function mouseClicked() {
   for (let icon of icons) {
     if (icon.isHovered()){
       icon.onClick();
+    }
+  }
+
+  for (let icon of infoIcons) {
+    if (icon.isHovered() && !icon.isDisplayed) {
+      icon.isDisplayed = true;
+      break;
+    }
+    else if (icon.isHovered && icon.isDisplayed) {
+      icon.isDisplayed = false;
+      break;
     }
   }
 }

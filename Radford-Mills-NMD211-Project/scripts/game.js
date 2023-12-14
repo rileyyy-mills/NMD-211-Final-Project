@@ -1,11 +1,12 @@
 let circleShape, squareShape;
 let center_x, center_y;
-let play, mybutton;
+let play, mybutton, serveButton;
 let gameState;
 let bar;
 let cup;
 let score;
 let orderNumber;
+let currentOrder = null;
 let icon;
 let icons = [];
 let infoIcon;
@@ -109,12 +110,6 @@ class Order {
     strokeWeight(2);
 
   }
-
-  //Displays ticket on side of screen
-  dragTicket() {
-
-  }
-
 
   isHovered() {
     // Check if the mouse is over the ticket
@@ -348,37 +343,6 @@ class InfoIcon extends Icon {
   }
 }
 
-function setup() {
-  createCanvas(mainMenuImg.width, mainMenuImg.height);
-  bar = new Bar(6);
-  cup = new Cup();
-  score = new Score();
-  orderNumber = 0;
-
-  ingredientList.push(new Ingredient("Light Rum", "its from somewhere!", "white"));
-  ingredientList.push(new Ingredient("Dark Rum", "its from somewhere!", "darkgoldenrod"));
-  ingredientList.push(new Ingredient("Coconut Rum", "its from somewhere!", "white"));
-  ingredientList.push(new Ingredient("Lime Juice", "its from somewhere!", "limeGreen"));
-  ingredientList.push(new Ingredient("Orange Juice", "its from somewhere!", "orange"));
-  ingredientList.push(new Ingredient("Pineapple", "its from somewhere!", "yellow"));
-
-  orderTypes.push(new Order("White Russian", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
-
-  let i;
-  for(i = 0; i < 6; i++){
-    infoIcon = new InfoIcon(172 + (i * (65)), height - 30, 13, 13, "gray", ingredientList[i]);
-    infoIcons.push(infoIcon);
-  }
-
-  // Adds ingredients to bar setup
-  for (ingred of ingredientList) {
-    bar.addIngredient(ingred);
-  }
-
-  // Adds list of possible orders to players current list of ACTIVE orders
-  orders.push(orderTypes[0]);
-}
-
 class Score {
   constructor() {
     this.score = 0;
@@ -400,9 +364,42 @@ class Score {
   }
 }
 
+function setup() {
+  createCanvas(mainMenuImg.width, mainMenuImg.height);
+  bar = new Bar(6);
+  cup = new Cup();
+  score = new Score();
+  serveButton = new IngameButton(450,300,65,30," SERVE");
+  orderNumber = 0;
+  backgroundMusic.loop();
+
+  ingredientList.push(new Ingredient("Light Rum", "its from somewhere!", "white"));
+  ingredientList.push(new Ingredient("Dark Rum", "its from somewhere!", "darkgoldenrod"));
+  ingredientList.push(new Ingredient("Coconut Rum", "its from somewhere!", "white"));
+  ingredientList.push(new Ingredient("Lime Juice", "its from somewhere!", "limeGreen"));
+  ingredientList.push(new Ingredient("Orange Juice", "its from somewhere!", "orange"));
+  ingredientList.push(new Ingredient("Pineapple", "its from somewhere!", "yellow"));
+
+  orderTypes.push(new Order("White Russian", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
+  orderTypes.push(new Order("Not Russian", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
+  orderTypes.push(new Order("Maybe American?", "Was made in Russia and they like it because it cures their depression. Idk, prolly true.", ingredientList));
+
+
+  for(i = 0; i < 6; i++){
+    infoIcon = new InfoIcon(172 + (i * (65)), height - 30, 13, 13, "gray", ingredientList[i]);
+    infoIcons.push(infoIcon);
+  }
+
+  // Adds ingredients to bar setup
+  for (ingred of ingredientList) {
+    bar.addIngredient(ingred);
+  }
+
+}
+
 function draw() {
   runUI();
-  currentMenuState = menuHIDE;
+  //currentMenuState = menuHIDE;
   playGame();
 }
 
@@ -412,37 +409,36 @@ function playGame() {
     return;
   }
 
-  // temporarily placed to ensure that my orders array doesn't get flooded with a million white russian drinks...
-  if (orders.length > 1) {
-    console.log("ORDERS COUNT:", orders.length);
-    orders.pop();
+  if (currentOrder == null) {
+    currentOrder = random(orderTypes);
+    console.log("ORDER IS NULL; CHANGED TO: ",currentOrder);
   }
 
   background(barImg);
   score.display();
-  
   bar.displayIngredients();
+  serveButton.display();
   cup.display();
   cup.update();
 
-  for (let order of orders) {
-    order.display();
-  }
+  currentOrder.display();
 }
 
 function mouseClicked() {
   // Check if any ticket is clicked and display its preview
-  for (let order of orders) {
-
-    if (order.isHovered() && !order.isDisplayed) {
-      order.isDisplayed = true;
-      break;
-    }
-    else if (order.isHovered && order.isDisplayed) {
-      order.isDisplayed = false;
-      break;
-    }
+  if(serveButton.isPressed) {
+    currentOrder = orderTypes.random;
+    cup.ingredientsAdded = [];
+    serveButton.isPressed = false;
   }
+
+  if (currentOrder.isHovered() && !currentOrder.isDisplayed) {
+    currentOrder.isDisplayed = true;
+  }
+  else if (currentOrder.isHovered && currentOrder.isDisplayed) {
+    currentOrder.isDisplayed = false;
+  }
+
 
   for (let icon of icons) {
     if (icon.isHovered()){
@@ -463,6 +459,15 @@ function mouseClicked() {
 }
 
 function keyPressed() {
+
+  if (key === 'S' || key === 's') {
+    if (backgroundMusic.isPlaying()) {
+      backgroundMusic.pause();
+    } else {
+      backgroundMusic.loop();
+    }
+  }
+
   if (keyCode === ESCAPE) {
     isPaused = !isPaused;
     if (isPaused && (currentMenuState == menuHIDE)) {

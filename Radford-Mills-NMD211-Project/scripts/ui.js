@@ -1,4 +1,4 @@
-// Got from ChatGPT to speed up development
+// Got Slider class from ChatGPT to speed up development; Doesnt work yet tho
 class Slider {
     constructor(x, y, length, thickness) {
         this.x = x;
@@ -60,6 +60,7 @@ class Button {
         this.label = label;
         this.newState = newState;
         this.isMouseOver = false;
+        this.isPressed = false;
         this.newState = this.newState;
     }
 
@@ -67,9 +68,6 @@ class Button {
         // Check if the mouse is over the button
         this.isMouseOver = this.isMouseInside();
 
-        if (this.isMouseOver) {
-            console.log("BUTTON HAS MOUSE OVER");
-        }
         // Draw the button
         stroke(255);
         strokeWeight(2);
@@ -83,6 +81,7 @@ class Button {
         textSize(20);
         text(this.label, this.x + this.width / 2 - 2.5, this.y + this.height / 2 - 5);
         console.log("BUTTON DISPLAYED");
+        stroke(0);
     }
 
     isMouseInside() {
@@ -92,9 +91,25 @@ class Button {
 
     mousePressed() {
         if (this.isMouseOver) {
+            this.isPressed = true;
             lastMenuState = currentMenuState;
             currentMenuState = this.newState;
-            console.log(this.label, "BUTTON MOUSE PRESSED & SET STATE TO", this.newState);
+            buttonSound.play();
+        }
+        else {
+            this.isPressed = false;
+        }
+    }
+}
+
+class IngameButton extends Button {
+    mousePressed() {
+        if (this.isMouseOver) {
+            this.isPressed = true;
+            buttonSound.play();
+        }
+        else {
+            this.isPressed = false;
         }
     }
 }
@@ -111,8 +126,9 @@ let creditsButton;
 let quitButton;
 let backButton;
 let volumeSlider;
+let buttonSound, backgroundMusic;
 
-let lastMenuState
+let lastMenuState;
 let currentMenuState;
 const menuHIDE = "HIDE";
 const menuMAIN = "MAIN";
@@ -125,6 +141,10 @@ function preload() {
     tropicalFont = loadFont("./fonts/TROPIKA_ISLAND.otf");
     mainMenuImg = loadImage("./images/tropical_leaves_background.png");
     barImg = loadImage("./images/BartenderTime_BarView_resized.png");
+    buttonSound = loadSound("./sounds/pressButtonSound.wav");
+    buttonSound.setVolume(1.1);
+    backgroundMusic = loadSound("./sounds/backgroundMusic.mp3");
+    backgroundMusic.setVolume(0.2);
     currentMenuState = menuMAIN;
 }
 
@@ -193,38 +213,27 @@ function mousePressed() {
     if (backButton.isMouseOver) {
         backButton.mousePressed();
     }
-
-    //if (currentMenuState == menuMAIN) {
     if (playButton.isMouseOver) {
         playButton.mousePressed();
-    } else if (settingsButton.isMouseOver) {
+    } 
+    if (settingsButton.isMouseOver) {
         settingsButton.mousePressed();
-    } else if (scoreBoardButton.isMouseOver) {
+    } 
+    if (scoreBoardButton.isMouseOver) {
         scoreBoardButton.mousePressed();
-    } else if (creditsButton.isMouseOver) {
+    } 
+    if (creditsButton.isMouseOver) {
         creditsButton.mousePressed();
     }
-    // } 
-    //else if (currentMenuState == menuSETTINGS){
-    if (volumeSlider.isMouseOver) {
-        volumeSlider.mousePressed();
-    }
-    //} 
-    /*else if (currentMenuState == menuSCOREBOARD){
-
-    }
-    else if (currentMenuState == menuCREDITS){
-
-    }
-    else if (currentMenuState == menuPAUSE) {*/
-    // Handle mousePressed for buttons in pauseMenu
     if (continueButton.isMouseOver) {
         continueButton.mousePressed();
     }
     if (quitButton.isMouseOver) {
         quitButton.mousePressed();
     }
-    //}
+    if (serveButton.isMouseOver) {
+        serveButton.mousePressed();
+    }
 }
 
 function mouseDragged() {
